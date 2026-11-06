@@ -1,6 +1,20 @@
 ---
 include:
-  - board: nice_nano//zmk
+  # Corne V3 (nice!nano v2) -> config/corne.keymap + config/corne.conf
+  - board: nice_nano_v2
     shield: corne_left
-  - board: nice_nano//zmk
+  - board: nice_nano_v2
     shield: corne_right
+
+  # Keebart Corne Choc Pro BT -> config/corne_choc_pro.keymap + config/corne_choc_pro.conf
+  - board: corne_choc_pro_left
+    shield: sharp_mip
+  - board: corne_choc_pro_right
+    shield: sharp_mip
+
+  # Flash once on each Corne Choc Pro half when switching from the Keebart
+  # Studio firmware, then flash the normal firmware again.
+  - board: corne_choc_pro_left
+    shield: settings_reset
+  - board: corne_choc_pro_right
+    shield: settings_reset

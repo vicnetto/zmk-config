@@ -1,0 +1,279 @@
+/*
+ * Copyright (c) 2020 The ZMK Contributors
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+#include <dt-bindings/zmk/pointing.h>
+#include <dt-bindings/zmk/rgb.h>
+#include "keymap_abnt2.h"
+
+// Took from: sukantamaikap/zmk-config-corne
+#define LEFT_POSITIONS  0 1 2 3 4 5 14 15 16 17 18 19 28 29 30 31 32 33
+#define RIGHT_POSITIONS 8 9 10 11 12 13 22 23 24 25 26 27 34 35 36 37 38 39
+#define THUMBS          40 41 42 43 44 45
+
+/* Key Positions:
+╭────────────────────────────╮ ╭────────────────────────────╮
+│  0   1   2   3   4   5 ( 6)│ │( 7)  8   9  10  11  12  13 │
+│ 14  15  16  17  18  19 (20)│ │(21) 22  23  24  25  26  27 │
+│ 28  29  30  31  32  33     │ │     34  35  36  37  38  39 │
+╰───────────╮ 40  41  42     │ │     43  44  45 ╭───────────╯
+            ╰────────────────╯ ╰────────────────╯
+ (6, 7, 20, 21) are the optional inner keys/encoders. On this board the
+ displays sit there, so they are bound to &none on every layer.
+*/
+
+/ {
+    chosen {
+        zmk,physical-layout = &default_layout;
+    };
+};
+
+// Layers
+#define L_BSE 0
+#define L_NMB 1
+#define L_SYM 2
+#define L_FUN 3
+#define L_GAM 4
+
+/ {
+    combos {
+        compatible = "zmk,combos";
+
+        combo_caps_word {
+            timeout-ms = <40>;
+            require-prior-idle-ms = <150>;
+            key-positions = <15 26>;
+            bindings = <&caps_word>;
+            layers = <L_BSE>;
+        };
+
+        combo_copy {
+            timeout-ms = <40>;
+            require-prior-idle-ms = <150>;
+            key-positions = <30 31>; // X + C
+            bindings = <&kp LC(BR_C)>;
+            layers = <L_BSE>;
+        };
+
+        combo_paste {
+            timeout-ms = <40>;
+            require-prior-idle-ms = <150>;
+            key-positions = <31 32>; // C + V
+            bindings = <&kp LC(BR_V)>;
+            layers = <L_BSE>;
+        };
+
+        combo_cut {
+            timeout-ms = <40>;
+            require-prior-idle-ms = <150>;
+            key-positions = <30 32>; // X + V
+            bindings = <&kp LC(BR_X)>;
+            layers = <L_BSE>;
+        };
+    };
+    
+    behaviors {
+        hrml: home_row_mods_left {
+            compatible = "zmk,behavior-hold-tap";
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <150>;
+            require-prior-idle-ms = <105>;
+            #binding-cells = <2>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <RIGHT_POSITIONS THUMBS>;
+            hold-trigger-on-release; // delay positional check until key release
+            // global-quick-tap-ms = <75>
+        };
+
+        hrmr: home_row_mods_right {
+            compatible = "zmk,behavior-hold-tap";
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <150>;
+            require-prior-idle-ms = <105>;
+            #binding-cells = <2>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <LEFT_POSITIONS THUMBS>;
+            hold-trigger-on-release; // delay positional check until key release
+            // global-quick-tap-ms = <75>
+        };
+
+        mtb: mod_tap_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            flavor = "balanced";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <140>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        mtsh: mod_tap_shift {
+            compatible = "zmk,behavior-hold-tap";
+            flavor = "hold-preferred"; // any key pressed while held -> shift
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <100>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        ltb: layer_tap_balanced {
+            compatible = "zmk,behavior-hold-tap";
+            flavor = "balanced";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <140>; // low enough for "space, then hold space for a symbol"
+            bindings = <&mo>, <&kp>;
+        };
+
+        mttp: mod_tap_tap_preferred {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            quick-tap-ms = <120>;
+            require-prior-idle-ms = <50>;
+            flavor = "tap-preferred";
+            bindings = <&kp>, <&kp>;
+        };
+
+        lttp: layer_toggle_tap_preferred {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            tapping-term-ms = <300>;
+            quick-tap-ms = <150>;
+            require-prior-idle-ms = <50>;
+            flavor = "tap-preferred";
+            bindings = <&tog>, <&kp>;
+        };
+    };
+    
+    keymap {
+        compatible = "zmk,keymap";
+    
+        base_layer {
+            /*
+            * ┌───────┬───────┬───────┬───────┬───────┬───────┐         ┌───────┬───────┬───────┬───────┬───────┬───────┐
+            * │  TAB  │   Q   │   W   │   E   │   R   │   T   │         │   Y   │   U   │   I   │   O   │   P   │   ´   │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │   `   │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │  ESC  │   A   │   S   │   D   │   F   │   G   │         │   H   │   J   │   K   │   L   │   Ç   │   ~   │
+            * │       │ LSHFT │  LALT │ LCTRL │  LGUI │       │         │       │ RGUI  │ RCTRL │ LALT  │ RSHFT │   ^   │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │ LSHFT │   Z   │   X   │   C   │   V   │   B   │         │   N   │   M   │   ,   │   .   │   ;   │  / ?  │
+            * │       │       │       │       │       │       │         │       │       │   <   │   >   │   :   │ RALT  │
+            * └───────┴───────┴───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┴───────┴───────┘
+            *                         │  BSPC │  RET  │ SPACE │         │ BSPC  │  TAB  │  DEL  │
+            *                         │       │ L_NMB │ L_SYM │         │ L_NMB │ LSHFT │ L_FUN │
+            *                         └───────┴───────┴───────┘         └───────┴───────┴───────┘
+            */
+    
+            bindings = <
+                &kp TAB   &kp BR_Q         &kp BR_W        &kp BR_E         &kp BR_R        &kp BR_T         &none     &none &kp BR_Y        &kp BR_U         &kp BR_I         &kp BR_O        &kp BR_P             &kp BR_ACUTE
+                &kp ESC   &hrml LSHFT BR_A &hrml LALT BR_S &hrml LCTRL BR_D &hrml LGUI BR_F &kp BR_G         &none     &none &kp BR_H        &hrmr RGUI BR_J  &hrmr RCTRL BR_K &hrmr LALT BR_L &hrmr RSHFT BR_CEDIL &kp BR_TILDE
+                &kp LSHFT &kp BR_Z         &kp BR_X        &kp BR_C         &kp BR_V        &kp BR_B                         &kp BR_N        &kp BR_M         &kp BR_COMMA     &kp BR_DOT      &kp BR_SEMI          &mtb RALT BR_FSLH
+                                                           &kp BSPC         &ltb L_NMB RET  &ltb L_SYM SPACE                 &ltb L_NMB BSPC &mtsh LSHFT TAB  &ltb L_FUN DEL
+            >;
+        };
+    
+        number_layer {
+            /*
+            * ┌───────┬───────┬───────┬───────┬───────┬───────┐         ┌───────┬───────┬───────┬───────┬───────┬───────┐
+            * │   ▼   │   +   │   7   │   8   │   9   │   -   │         │ HOME  │ PG_DN │ PG_UP │  END  │ PSCRN │  INS  │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │   ▼   │   (   │   4   │   5   │   6   │   )   │         │ LEFT  │ DOWN  │  UP   │ RIGHT │  ▼    │  ▼    │
+            * │       │ LSHFT │  LALT │ LCTRL │  LGUI │       │         │       │ RGUI  │ RCTRL │ LALT  │       │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │   ▼   │   *   │   1   │   2   │   3   │   /   │         │ MOUSE │ MOUSE │ MOUSE │ MOUSE │  ▼    │  ▼    │
+            * │       │       │       │       │       │       │         │ LEFT  │ DOWN  │  UP   │ RIGHT │       │       │
+            * └───────┴───────┴───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┴───────┴───────┘
+            *                         │   0   │   ▼   │   ▼   │         │  ▼    │  ▼    │  ▼    │
+            *                         │       │       │       │         │       │       │       │
+            *                         └───────┴───────┴───────┘         └───────┴───────┴───────┘
+            */
+            bindings = <
+                &trans &kp BR_PLUS         &kp BR_7        &kp BR_8         &kp BR_9        &kp BR_MINUS &none      &none &kp HOME        &kp PG_DN       &kp PG_UP      &kp END          &kp PSCRN &kp INS
+                &trans &hrml LSHFT BR_LPAR &hrml LALT BR_4 &hrml LCTRL BR_5 &hrml LGUI BR_6 &kp BR_RPAR  &none      &none &kp LEFT        &hrmr RGUI DOWN &hrmr RCTRL UP &hrmr LALT RIGHT &kp RSHFT &trans
+                &trans &kp BR_STAR         &kp BR_1        &kp BR_2         &kp BR_3        &kp BR_FSLH                   &mmv MOVE_LEFT  &mmv MOVE_DOWN  &mmv MOVE_UP   &mmv MOVE_RIGHT  &trans    &trans
+                                                           &kp BR_0         &trans          &trans                        &trans          &trans          &trans
+            >;
+        };
+    
+        symbol_layer {
+            /*
+            * ┌───────┬───────┬───────┬───────┬───────┬───────┐         ┌───────┬───────┬───────┬───────┬───────┬───────┐
+            * │   ▼   │   ▼   │   "   │   !   │   $   │   %   │         │   @   │   &   │   *   │   '   │  ▼    │  ▼    │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │   ▼   │   {   │   (   │   )   │   }   │   =   │         │   \   │   +   │   -   │   /   │   ?   │  ▼    │
+            * │       │ LSHFT │  LALT │ LCTRL │  LGUI │       │         │       │ RGUI  │ RCTRL │ LALT  │ RSHFT │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │   ▼   │   ▼   │   [   │   ]   │   _   │   #   │         │   |   │   ;   │   :   │  ▼    │  ▼    │  ▼    │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │       │
+            * └───────┴───────┴───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┴───────┴───────┘
+            *                         │   ▼   │   ▼   │   ▼   │         │  ▼    │  ▼    │  ▼    │
+            *                         │       │       │       │         │       │       │       │
+            *                         └───────┴───────┴───────┘         └───────┴───────┴───────┘
+            */
+            bindings = <
+                &trans &trans              &kp BR_DQT         &kp BR_EXCL         &kp BR_DLLR         &kp BR_PRCNT &none     &none   &kp BR_AT   &kp BR_AMPS        &kp BR_STAR          &kp BR_SQT         &trans               &trans
+                &trans &hrml LSHFT BR_LBRC &hrml LALT BR_LPAR &hrml LCTRL BR_RPAR &hrml LGUI BR_RBRC  &kp BR_EQUAL &none     &none   &kp BR_BSLH &hrmr RGUI BR_PLUS &hrmr RCTRL BR_MINUS &hrmr LALT BR_FSLH &hrmr RSHFT BR_QMARK &trans
+                &trans &trans              &kp BR_LBKT        &kp BR_RBKT         &kp BR_UNDER        &kp BR_HASH                    &kp BR_PIPE &kp BR_SEMI        &kp BR_COLON         &trans             &trans               &trans
+                                                              &trans              &trans              &trans                         &trans      &trans             &trans
+            >;
+        };
+    
+        function_layer {
+            /*
+            * ┌───────┬───────┬───────┬───────┬───────┬───────┐         ┌───────┬───────┬───────┬───────┬───────┬───────┐
+            * │  RGB  │  RGB  │   F7  │   F8  │   F9  │  F10  │         │ BT_0  │ BT_1  │ BT_2  │ BT_4  │ BT_5  │ BTCLR │
+            * │  TOG  │  EFF  │       │       │       │       │         │       │       │       │       │       │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │   ▼   │ LSHFT │   F4  │   F5  │   F6  │  F11  │         │ BRGHT │ VOL+  │ MUTE  │ VOL-  │ RSHFT │ BTCTR │
+            * │       │       │  LALT │ LCTRL │  LGUI │       │         │ INS   │ RGUI  │ RCTRL │ LALT  │       │  ALL  │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │  RGB  │  RGB  │   F1  │   F2  │   F3  │  F12  │         │ BRGHT │ PREV  │ PLAY  │ NEXT  │  TOG  │  ▼    │
+            * │ BRI-  │ BRI+  │       │       │       │       │         │ DEC   │       │ PAUSE │       │ L_GAM │       │
+            * └───────┴───────┴───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┴───────┴───────┘
+            *                         │   ▼   │   ▼   │   ▼   │         │  ▼    │  ▼    │  ▼    │
+            *                         │       │       │       │         │       │       │       │
+            *                         └───────┴───────┴───────┘         └───────┴───────┴───────┘
+            */
+            bindings = <
+                &rgb_ug RGB_TOG &rgb_ug RGB_EFF &kp F7        &kp F8         &kp F9        &kp F10 &none     &none &bt BT_SEL 0  &bt BT_SEL 1        &bt BT_SEL 2       &bt BT_SEL 3        &bt BT_SEL 4 &bt BT_CLR
+                &trans          &kp LSHIFT      &hrml LALT F4 &hrml LCTRL F5 &hrml LGUI F6 &kp F11 &none     &none &kp C_BRI_INC &hrmr RGUI C_VOL_DN &hrmr RCTRL C_MUTE &hrmr LALT C_VOL_UP &kp RSHFT    &bt BT_CLR_ALL
+                &rgb_ug RGB_BRD &rgb_ug RGB_BRI &kp F1        &kp F2         &kp F3        &kp F12                 &kp C_BRI_DEC &kp C_PREV          &kp C_PP           &kp C_NEXT          &tog L_GAM   &trans
+                                                              &trans         &trans        &trans                  &trans        &trans              &trans
+            >;
+        };
+
+        gaming_layer {
+            /*
+            * ┌───────┬───────┬───────┬───────┬───────┬───────┐         ┌───────┬───────┬───────┬───────┬───────┬───────┐
+            * │   4   │   ▼   │   ▼   │   ▼   │   ▼   │   ▼   │         │  ▼    │  ▼    │  ▼    │  ▼    │  ▼    │  ▼    │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │ LSHFT │   A   │   S   │   D   │   F   │   ▼   │         │  ▼    │  J    │  K    │  L    │  Ç    │  ▼    │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │       │
+            * ├───────┼───────┼───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┼───────┼───────┤
+            * │ LCTRL │   ▼   │   ▼   │   ▼   │   ▼   │   ▼   │         │  ▼    │  ▼    │  ▼    │  ▼    │  ▼    │  ▼    │
+            * │       │       │       │       │       │       │         │       │       │       │       │       │       │
+            * └───────┴───────┴───────┼───────┼───────┼───────┤         ├───────┼───────┼───────┼───────┴───────┴───────┘
+            *                         │   3   │   2   │   1   │         │  RET  │ BSPC  │ SPACE │
+            *                         │       │       │       │         │ L_NMB │ L_SYM │ L_FUN │
+            *                         └───────┴───────┴───────┘         └───────┴───────┴───────┘
+            */
+            bindings = <
+                &mttp ESC BR_4  &kp BR_Q &kp BR_W &kp BR_E &kp BR_R &kp BR_T &none     &none &kp BR_Y       &kp BR_U        &kp BR_I         &kp BR_O         &kp BR_P     &kp BR_ACUTE
+                &kp LSHFT       &kp BR_A &kp BR_S &kp BR_D &kp BR_F &kp BR_G &none     &none &kp BR_H       &kp BR_J        &kp BR_K         &kp BR_L         &kp BR_CEDIL &lttp L_GAM BR_TILDE
+                &kp LCTRL       &kp BR_Z &kp BR_X &kp BR_C &kp BR_V &kp BR_B                 &kp BR_N       &kp BR_M        &kp BR_COMMA     &kp BR_DOT       &kp BR_SEMI  &mtb LALT BR_FSLH
+                                                  &kp BR_3 &kp BR_2 &kp BR_1                 &ltb L_NMB RET  &ltb L_SYM BSPC  &ltb L_FUN SPACE
+            >;
+        };
+    };
+};
