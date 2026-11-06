@@ -62,7 +62,7 @@ static void draw_top(lv_obj_t *widget, lv_color_t cbuf[], const struct status_st
     lv_canvas_draw_rect(canvas, 0, 0, CANVAS_SIZE, CANVAS_SIZE, &rect_black_dsc);
 
     // Draw battery
-    draw_battery(canvas, state);
+    draw_battery_percentage(canvas, state);
 
     // Draw output status
     char output_text[10] = {};

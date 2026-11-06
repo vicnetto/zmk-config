@@ -5,6 +5,7 @@
  *
  */
 
+#include <stdio.h>
 #include <zephyr/kernel.h>
 #include "util.h"
 
@@ -45,6 +46,27 @@ void draw_battery(lv_obj_t *canvas, const struct status_state *state) {
         lv_draw_img_dsc_t img_dsc;
         lv_draw_img_dsc_init(&img_dsc);
         lv_canvas_draw_img(canvas, 9, -1, &bolt, &img_dsc);
+    }
+}
+
+// Shows "X%", followed by the bolt image while charging.
+void draw_battery_percentage(lv_obj_t *canvas, const struct status_state *state) {
+    const lv_font_t *font = &lv_font_montserrat_16;
+
+    lv_draw_label_dsc_t label_dsc;
+    init_label_dsc(&label_dsc, LVGL_FOREGROUND, font, LV_TEXT_ALIGN_LEFT);
+
+    char text[8];
+    snprintf(text, sizeof(text), "%u%%", state->battery);
+    lv_canvas_draw_text(canvas, 0, 0, CANVAS_SIZE, &label_dsc, text);
+
+    if (state->charging) {
+        lv_point_t size;
+        lv_txt_get_size(&size, text, font, 0, 0, LV_COORD_MAX, LV_TEXT_FLAG_NONE);
+
+        lv_draw_img_dsc_t img_dsc;
+        lv_draw_img_dsc_init(&img_dsc);
+        lv_canvas_draw_img(canvas, size.x + 1, -1, &bolt, &img_dsc);
     }
 }
 
