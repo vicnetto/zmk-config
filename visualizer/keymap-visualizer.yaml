@@ -3,8 +3,8 @@ layers:
   default:
   - [TAB, Q, W, E, R, T, Y, U, I, O, P, {t: "´", h: "`"}]
   - [ESC, {t: A, h: LSHFT}, {t: S, h: LALT}, {t: D, h: LCTRL}, {t: F, h: LGUI}, G, H, {t: J, h: RGUI}, {t: K, h: RCTRL}, {t: L, h: LALT}, {t: Ç, h: RSHFT}, {t: "~", h: "^"}]
-  - [LSHFT, Z, X, C, V, B, N, M, {t: ",", h: "<"}, {t: ".", h: ">"}, ":", {t: ";", h: RALT}]
-  - [{t: "/", h: "?"}, {t: TAB, h: number}, {t: SPACE, h: symbol}, {t: RET, h: number}, {t: BSPC, h: LSHFT}, {t: DEL, h: function}]
+  - [LSHFT, Z, X, C, V, B, N, M, {t: ",", h: "<"}, {t: ".", h: ">"}, {t: ";", h: ":"}, {t: "/ ?", h: RALT}]
+  - [BSPC, {t: RET, h: number}, {t: SPACE, h: symbol}, {t: BSPC, h: number}, {t: TAB, h: LSHFT}, {t: DEL, h: function}]
   number:
   - [{t: ▽, type: trans}, "+", 7, 8, 9, "-", HOME, PG DN, PG UP, END, PSCRN, INS]
   - [{t: ▽, type: trans}, {t: "(", h: LSHFT}, {t: 4, h: LALT}, {t: 5, h: LCTRL}, {t: 6, h: LGUI}, ")", LEFT, {t: DOWN, h: RGUI}, {t: UP, h: RCTRL}, {t: RIGHT, h: LALT}, RSHFT, {t: ▽, type: trans}]
@@ -16,9 +16,9 @@ layers:
   - [{t: ▽, type: trans}, {t: ▽, type: trans}, "[", "]", "_", "#", "|", ";", ":", {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}]
   - [{t: ▽, type: trans}, {t: ▽, type: trans}, {type: held}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}]
   function:
-  - [{t: ▽, type: trans}, {t: ▽, type: trans}, F7, F8, F9, F10, BT 0, BT 1, BT 2, BT 3, BT 4, BT CLR]
+  - ["RGB\nTOG", "RGB\nEFF", F7, F8, F9, F10, BT 0, BT 1, BT 2, BT 3, BT 4, BT CLR]
   - [{t: ▽, type: trans}, LSHFT, {t: F4, h: LALT}, {t: F5, h: LCTRL}, {t: F6, h: LGUI}, F11, BRI UP, {t: VOL DOWN, h: RGUI}, {t: (UN)MUTE, h: RCTRL}, {t: VOL UP, h: LALT}, RSHFT, BT CLR ALL]
-  - [{t: ▽, type: trans}, {t: ▽, type: trans}, F1, F2, F3, F12, BRI DOWN, PREV, PLAY PAUSE, NEXT, {t: tog, h: gaming}, {t: ▽, type: trans}]
+  - ["RGB\nBRI-", "RGB\nBRI+", F1, F2, F3, F12, BRI DOWN, PREV, PLAY PAUSE, NEXT, {t: tog, h: gaming}, {t: ▽, type: trans}]
   - [{t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {type: held}]
   gaming:
   - [{t: 4, h: ESC}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}, {t: ▽, type: trans}]
